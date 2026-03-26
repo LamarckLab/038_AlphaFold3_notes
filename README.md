@@ -26,8 +26,8 @@ git clone https://github.com/google-deepmind/alphafold3.git
 ```
 
 ## 03  准备MSA所需的数据库
-> **236机子路径 /data/lmk/alphafold3_databases**、
-> *pdb_2022_09_28_mmcif_files.tar 需要解压成 mmcif_files,共十个文件，总计627GB*
+> **236机子路径 /data/lmk/alphafold3_databases**  
+> **pdb_2022_09_28_mmcif_files.tar 需要解压成 mmcif_files,共十个文件，总计627GB**
 ```bash
 ├── bfd-first_non_consensus_sequences.fasta -17G
 ├── mgy_clusters_2022_05.fa -120G
