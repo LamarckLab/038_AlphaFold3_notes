@@ -16,7 +16,8 @@
 | 文档 | 说明 |
 | :--- | :--- |
 | [AlphaFold3_Setup.md](./AlphaFold3_Setup.md) | 基础镜像准备、源码克隆、MSA 数据库、模型权重、Docker 镜像构建 |
-| [AlphaFold3_Functions.md](./AlphaFold3_Functions.md) | AlphaFold3 各项功能的实现与使用笔记（整理中） |
+| [AlphaFold3_Functions.md](./AlphaFold3_Functions.md) | AlphaFold3 各项功能的实现与使用笔记 |
+| [AlphaFold3_JSON_Format.md](./AlphaFold3_JSON_Format.md) | AF3 输入 JSON 的常见格式说明（以蛋白质为例） |
 
 ---
 
