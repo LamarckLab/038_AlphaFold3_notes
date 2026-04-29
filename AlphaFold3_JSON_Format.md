@@ -14,7 +14,7 @@
       }
     }
   ],
-  "modelSeeds": [1],  // 随机种子，每个种子生成 5 个 sample，通常填 [1]
+  "modelSeeds": [1],  // 随机种子列表，长度 N → 输出 5N 个 sample → 例如 [1,2] 对应 10 个输出
   "dialect": "alphafold3",  // 固定写 "alphafold3"
   "version": 1  // 固定写 1
 }
