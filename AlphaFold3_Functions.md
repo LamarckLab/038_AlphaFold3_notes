@@ -102,21 +102,19 @@ docker run -it --rm \
     │  ① 服务器跑 data pipeline
     ▼
 2PV7_data.json  (含 MSA + 自动搜到的模板)
-    │
-    │
-    ▼
+
 2PV7.cif
     │
     │  ② 本地用 extract_single_chain.py 抽链
     ▼
-2PV7_data.json + 2PV7_single.cif  (单链模板)
-               │
-               │  ③ 本地用 add_custom_template.py 注入
-               ▼
-2PV7_data_custom_template.json  (推理输入)
-               │
-               │  ④ 服务器跑仅 inference
-               ▼
+2PV7_single.cif + 2PV7_data.json
+    │
+    │  ③ 本地用 add_custom_template.py 注入
+    ▼
+2PV7_data_custom_template.json
+    │
+    │  ④ 服务器跑仅 inference
+    ▼
 最终结构 + 置信度文件
 ```
 
