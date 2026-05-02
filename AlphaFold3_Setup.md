@@ -3,7 +3,7 @@
 ---
 
 ## 01  基础镜像的准备
-> 官方文档的 Dockerfile 里提到，alphafold3 会把 cuda-12.6.3-base-ubuntu24.04 作为基础镜像；
+> 官方文档的 Dockerfile 里提到，alphafold3 会把 cuda-12.6.3-base-ubuntu22.04 作为基础镜像；
 > Linux服务器很容易连不上Docker hub，无法正常执行docker pull，所以先在 windows 上拿到这个基础镜像
 >
 在 windows 的 cmd 中执行以下命令，可以通过执行 docker images 检查
