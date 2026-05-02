@@ -111,7 +111,7 @@ docker run -it --rm \
     │
     │  ③ 本地用 add_custom_template.py 注入
     ▼
-2PV7_data_custom_template.json
+2PV7_data_custom_template.json + 2PV7_single.cif
     │
     │  ④ 服务器跑仅 inference
     ▼
