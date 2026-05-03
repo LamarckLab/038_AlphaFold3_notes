@@ -90,7 +90,25 @@ docker run -it --rm \
     --num_diffusion_samples=3
 ```
 
-> **06 蛋白质结构预测 -- |批量任务|指定模板|仅 Inference|**
+> **06 蛋白质结构预测 -- |批量任务|不指定模板|限定模板日期|**
+```bash
+docker run -it --rm \
+  --volume /data/lmk/alphafold3_inputs:/af3_inputs \
+  --volume /data/lmk/alphafold3_outputs:/af3_outputs \
+  --volume /data/lmk/alphafold3_parameters:/af3_parameters \
+  --volume /data/lmk/alphafold3_databases:/af3_databases \
+  --gpus '"device=3"' \
+  -e XLA_PYTHON_CLIENT_PREALLOCATE=false \
+  alphafold3 \
+  python run_alphafold.py \
+    --input_dir=/af3_inputs \
+    --model_dir=/af3_parameters \
+    --db_dir=/af3_databases \
+    --output_dir=/af3_outputs \
+    --max_template_date=2018-01-01
+```
+
+> **07 蛋白质结构预测 -- |批量任务|指定模板|仅 Inference|**
 
 本流程涉及的所有示例文件见仓库 [custom template pipeline](custom%20template%20pipeline/)
 
