@@ -65,6 +65,44 @@ docker run -it --rm \
     --norun_inference
 ```
 
+任务多时串行太慢，可拆成多个容器并行 —— 详见 03b
+
+> **03b 蛋白质结构预测 -- |批量任务|仅 Data Pipeline|多容器并行|**
+
+**输入**：`alphafold3_inputs/` 放几十上百个待跑 JSON
+
+用 `scripts/af3_msa_split_parallel.py` 把任务轮转切分到 N 组，再起 N 个容器各跑一组。改脚本顶部的 `GROUPS` 即可调并行度，跑完它会打印配套的启动命令。
+
+```bash
+python /data/lmk/scripts/af3_msa_split_parallel.py
+```
+
+例如
+```bash
+for g in 0 1 2 3 4 5 6 7; do
+  docker run --rm --name af3_g$g \
+    --volume /data/lmk/af3_inputs_split/g$g:/af3_inputs \
+    --volume /data/lmk/alphafold3_outputs:/af3_outputs \
+    --volume /data/lmk/alphafold3_parameters:/af3_parameters \
+    --volume /data/lmk/alphafold3_databases:/af3_databases \
+    -e XLA_PYTHON_CLIENT_PREALLOCATE=false \
+    alphafold3 \
+    python run_alphafold.py \
+      --input_dir=/af3_inputs \
+      --model_dir=/af3_parameters \
+      --db_dir=/af3_databases \
+      --output_dir=/af3_outputs \
+      --jackhmmer_n_cpu=8 \
+      --norun_inference 2>&1 | sed "s/^/[g$g] /" &
+done
+wait
+```
+
+`2>&1 | sed` 给每行加 `[gN]` 前缀，8 路日志交错也分得清；行尾 `&` 加最后 `wait` 让 8 路同时跑。
+
+> [!NOTE]
+> **同序列的 MSA 在同一容器进程内复用。** 
+
 > **04 蛋白质结构预测 -- |批量任务|不指定模板|仅 Inference|**
 ```bash
 docker run -it --rm \
