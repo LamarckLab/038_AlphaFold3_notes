@@ -74,14 +74,14 @@ docker run -it --rm \
 用 `scripts/af3_msa_split_parallel.py` 把任务轮转切分到 N 组，再起 N 个容器各跑一组。改脚本顶部的 `GROUPS` 即可调并行度，跑完它会打印配套的启动命令。
 
 ```bash
-python /data/lmk/scripts/af3_msa_split_parallel.py
+python /data/lmk/alphafold3_scripts/af3_msa_split_parallel.py
 ```
 
 例如
 ```bash
 for g in 0 1 2 3 4 5 6 7; do
   docker run --rm --name af3_g$g \
-    --volume /data/lmk/af3_inputs_split/g$g:/af3_inputs \
+    --volume /data/lmk/alphafold3_inputs_split/g$g:/af3_inputs \
     --volume /data/lmk/alphafold3_outputs:/af3_outputs \
     --volume /data/lmk/alphafold3_parameters:/af3_parameters \
     --volume /data/lmk/alphafold3_databases:/af3_databases \

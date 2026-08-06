@@ -19,7 +19,7 @@ JACKHMMER_CPU = 8     # 每个 jackhmmer 用几个核，仅用于生成命令
 
 IN = "/data/lmk/alphafold3_inputs"
 OUT = "/data/lmk/alphafold3_outputs"
-SPLIT = "/data/lmk/af3_inputs_split"
+SPLIT = "/data/lmk/alphafold3_inputs_split"
 PARAMS = "/data/lmk/alphafold3_parameters"
 DBS = "/data/lmk/alphafold3_databases"
 
