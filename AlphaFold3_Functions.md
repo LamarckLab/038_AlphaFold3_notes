@@ -91,7 +91,7 @@ for g in 0 1 2 3 4 5 6 7; do
       --input_dir=/af3_inputs \
       --model_dir=/af3_parameters \
       --db_dir=/af3_databases \
-      --output_dir=/af3_outputs \
+      --output_dir=/af3_outputs \ 
       --jackhmmer_n_cpu=8 \
       --norun_inference 2>&1 | sed "s/^/[g$g] /" &
 done
@@ -100,8 +100,19 @@ wait
 
 `2>&1 | sed` 给每行加 `[gN]` 前缀，8 路日志交错也分得清；行尾 `&` 加最后 `wait` 让 8 路同时跑。
 
-> [!NOTE]
-> **同序列的 MSA 在同一容器进程内复用。** 
+> **03c 查看与停止并行容器 -- |批量任务|多容器并行|运维|**
+
+查看运行中的 docker 容器
+```bash
+docker ps
+```
+
+停掉所有正在跑的 AF3 容器。`docker ps -q` 只输出容器 ID，`$()` 把结果传给 `stop`
+```bash
+docker stop $(docker ps -q --filter name=af3_g)
+```
+
+日常有这两条就够 —— 03b 的启动命令带了 `--rm`，容器退出即自动删除
 
 > **04 蛋白质结构预测 -- |批量任务|不指定模板|仅 Inference|**
 ```bash
