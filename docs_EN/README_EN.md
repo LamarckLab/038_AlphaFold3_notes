@@ -20,7 +20,7 @@
 | Document | Description |
 | :--- | :--- |
 | [AlphaFold3_Setup_EN.md](./AlphaFold3_Setup_EN.md) | Base image, source checkout, MSA databases, model weights, Docker image build |
-| [AlphaFold3_Functions_EN.md](./AlphaFold3_Functions_EN.md) | Notes on running each AlphaFold3 feature |
+| [AlphaFold3_Functions_EN.md](./AlphaFold3_Functions_EN.md) | Command reference for each AlphaFold3 feature |
 | [AlphaFold3_JSON_Format_EN.md](./AlphaFold3_JSON_Format_EN.md) | Common formats for the AF3 input JSON (proteins as the example) |
 
 ---

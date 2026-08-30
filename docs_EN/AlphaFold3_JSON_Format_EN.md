@@ -6,7 +6,7 @@
 </p>
 
 ## Lamarck &nbsp; &nbsp; &nbsp; 2026-04-29
-#### This document shows the common formats for the AF3 input JSON (proteins as the example)
+#### Common formats for the AF3 input JSON, using proteins as the example
 ---
 
 > **00 Basic AF3 JSON structure**
@@ -21,7 +21,7 @@
       }
     }
   ],
-  "modelSeeds": [1],  // list of random seeds; N seeds -> 5N samples, e.g. [1,2] gives 10 outputs
+  "modelSeeds": [1],  // list of random seeds; N seeds produce 5N samples, e.g. [1,2] yields 10 outputs
   "dialect": "alphafold3",  // always "alphafold3"
   "version": 1  // always 1
 }
@@ -94,7 +94,7 @@
 
 ---
 
-**The formats below are for the web AlphaFold Server**
+**The formats below apply to the web AlphaFold Server**
 
 ---
 
@@ -103,7 +103,7 @@
 [
   {
     "name": "Example",          // job name; the output directory is named after it
-    "modelSeeds": [1],          // at most 1 seed per job; leave [] and the server picks one
+    "modelSeeds": [1],          // at most one seed per job; leave [] for a server-chosen seed
     "sequences": [
       {
         "proteinChain": {
@@ -113,7 +113,7 @@
       }
     ]
   }
-]                               // the whole thing is an array, with no dialect / version
+]                               // the top level is an array; no dialect / version fields
 ```
 
 ---
@@ -191,10 +191,10 @@
 | Top level             | a single object `{ }`                | an array `[ { }, … ]` (several jobs at once)             |
 | Protein               | `"protein"` + `"id"`                 | `"proteinChain"` + `"count"`                             |
 | Multimer              | id list `["A", "B"]`                 | `"count": 2`                                             |
-| Chain id              | assigned by hand                     | assigned by the server                                   |
+| Chain id              | assigned manually                    | assigned by the server                                   |
 | DNA / RNA             | `"dna"` / `"rna"` + `id`             | `"dnaSequence"` / `"rnaSequence"` + `count`              |
 | Ligand                | `"ligand"` + `ccdCodes` / `smiles`   | `"ligand": "CCD_XXX"` + `count` (allow-listed CCDs only) |
-| Ion                   | folded into the ligand ccdCode       | its own `"ion"` field                                    |
+| Ion                   | included in the ligand ccdCode       | its own `"ion"` field                                    |
 | `dialect` / `version` | required                             | none                                                     |
 | `modelSeeds`          | required; `[1,2,…]` may hold several | at most **1** per job (leave `[]` for random)            |
 

@@ -6,7 +6,7 @@
 </p>
 
 ## Lamarck &nbsp; &nbsp; &nbsp; 2026-04-29
-#### This document records the commands for running AlphaFold3 on the server
+#### Command reference for running AlphaFold3 on the server
 ---
 
 *Path configuration*
@@ -16,7 +16,7 @@ Output dir:     /data/lmk/alphafold3_outputs      # predictions (cif + confidenc
 Parameters dir: /data/lmk/alphafold3_parameters   # model weights af3.bin
 Databases dir:  /data/lmk/alphafold3_databases    # MSA databases (~627GB)
 ```
-Inside the container they are mounted at `/af3_inputs`, `/af3_outputs`, `/af3_parameters` and `/af3_databases`
+Inside the container these are mounted at `/af3_inputs`, `/af3_outputs`, `/af3_parameters` and `/af3_databases`.
 
 ---
 
@@ -72,19 +72,19 @@ docker run -it --rm \
     --norun_inference
 ```
 
-Running many jobs serially is too slow; split them across several containers instead — see 03b
+Serial execution is impractical for large batches; split the work across several containers instead (see 03b).
 
 > **03b Protein structure prediction -- |batch job|data pipeline only|parallel containers|**
 
-**Input**: put the dozens or hundreds of pending JSONs in `alphafold3_inputs/`
+**Input**: the pending JSON files, tens to hundreds of them, in `alphafold3_inputs/`.
 
-Use `scripts/af3_msa_split_parallel.py` to deal the jobs round-robin into N groups, then start N containers, one per group. Edit `GROUPS` at the top of the script to change the degree of parallelism; when it finishes it prints the matching launch command.
+`scripts/af3_msa_split_parallel.py` distributes the jobs round-robin across N groups, one container per group. Set `GROUPS` at the top of the script to control the degree of parallelism; on completion the script prints the corresponding launch command.
 
 ```bash
 python /data/lmk/alphafold3_scripts/af3_msa_split_parallel.py
 ```
 
-For example
+Example:
 ```bash
 for g in 0 1 2 3 4 5 6 7; do
   docker run --rm --name af3_g$g \
@@ -105,21 +105,21 @@ done
 wait
 ```
 
-`2>&1 | sed` prefixes every line with `[gN]`, so eight interleaved logs stay readable; the trailing `&` plus the final `wait` keeps all eight running at once.
+`2>&1 | sed` prefixes each line with `[gN]`, keeping the eight interleaved logs distinguishable. The trailing `&` and the closing `wait` run all eight groups concurrently.
 
 > **03c Inspecting and stopping the parallel containers -- |batch job|parallel containers|operations|**
 
-List the running docker containers
+List the running containers:
 ```bash
 docker ps
 ```
 
-Stop every running AF3 container. `docker ps -q` prints only the container IDs, and `$()` hands them to `stop`
+Stop all running AF3 containers. `docker ps -q` emits container IDs only, which `$()` passes to `stop`:
 ```bash
 docker stop $(docker ps -q --filter name=af3_g)
 ```
 
-These two are enough day to day — the launch command in 03b passes `--rm`, so a container is removed as soon as it exits
+These two commands cover routine use: the launch command in 03b passes `--rm`, so each container is removed on exit.
 
 > **04 Protein structure prediction -- |batch job|no custom template|inference only|**
 ```bash
@@ -177,7 +177,7 @@ docker run -it --rm \
 
 > **07 Protein structure prediction -- |batch job|custom template|inference only|**
 
-All the example files for this workflow are in the repo under [custom template pipeline](../custom%20template%20pipeline/)
+The example files for this workflow are in [custom template pipeline](../custom%20template%20pipeline/).
 
 ##### Workflow overview
 
