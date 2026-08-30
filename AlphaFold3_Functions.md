@@ -1,3 +1,6 @@
+<p align="left">
+  <a href="./README.md">← 返回主页</a>
+</p>
 <p align="right">
   <a href="./docs_EN/AlphaFold3_Functions_EN.md">English</a> | <strong>中文</strong>
 </p>

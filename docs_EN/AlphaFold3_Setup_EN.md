@@ -1,3 +1,6 @@
+<p align="left">
+  <a href="./README_EN.md">← Back to home</a>
+</p>
 <p align="right">
   <strong>English</strong> | <a href="../AlphaFold3_Setup.md">中文</a>
 </p>
