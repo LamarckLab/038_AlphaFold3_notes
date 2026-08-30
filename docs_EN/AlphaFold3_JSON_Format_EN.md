@@ -1,31 +1,31 @@
 <p align="right">
-  <a href="./docs_EN/AlphaFold3_JSON_Format_EN.md">English</a> | <strong>中文</strong>
+  <strong>English</strong> | <a href="../AlphaFold3_JSON_Format.md">中文</a>
 </p>
 
 ## Lamarck &nbsp; &nbsp; &nbsp; 2026-04-29
-#### 该文档用于展示 AF3 输入 JSON 的常见格式（以蛋白质为例）
+#### This document shows the common formats for the AF3 input JSON (proteins as the example)
 ---
 
-> **00 AF3 JSON 基本结构**
+> **00 Basic AF3 JSON structure**
 ```json
 {
-  "name": "Example",  // 任务名，输出目录会以此命名
+  "name": "Example",  // job name; the output directory is named after it
   "sequences": [
     {
       "protein": {
-        "id": "A",  // 链的名称，单链写字符串 "A"，多链写列表 ["A", "B"]
-        "sequence": "ABCDEFGHIJKLMNOPQRSTUVWXYZ"  // 氨基酸序列
+        "id": "A",  // chain name; a string "A" for one chain, a list ["A", "B"] for several
+        "sequence": "ABCDEFGHIJKLMNOPQRSTUVWXYZ"  // amino-acid sequence
       }
     }
   ],
-  "modelSeeds": [1],  // 随机种子列表，长度 N → 输出 5N 个 sample → 例如 [1,2] 对应 10 个输出
-  "dialect": "alphafold3",  // 固定写 "alphafold3"
-  "version": 1  // 固定写 1
+  "modelSeeds": [1],  // list of random seeds; N seeds -> 5N samples, e.g. [1,2] gives 10 outputs
+  "dialect": "alphafold3",  // always "alphafold3"
+  "version": 1  // always 1
 }
 ```
 ---
 
-> **01 单链蛋白**
+> **01 Single-chain protein**
 ```json
 {
   "name": "LMK1",
@@ -45,7 +45,7 @@
 
 ---
 
-> **02 同源多聚体**
+> **02 Homomer**
 ```json
 {
   "name": "LMK2",
@@ -65,7 +65,7 @@
 
 ---
 
-> **03 异源多聚体**
+> **03 Heteromer**
 ```json
 {
   "name": "LMK3",
@@ -91,31 +91,31 @@
 
 ---
 
-**以下为网页版 AlphaFold Server 的写法**
+**The formats below are for the web AlphaFold Server**
 
 ---
 
-> **04 基本结构**
+> **04 Basic structure**
 ```json
 [
   {
-    "name": "Example",          // 任务名，输出目录以此命名
-    "modelSeeds": [1],          // 每个 job 上限 1 个 seed；留空 [] 则服务器随机
+    "name": "Example",          // job name; the output directory is named after it
+    "modelSeeds": [1],          // at most 1 seed per job; leave [] and the server picks one
     "sequences": [
       {
         "proteinChain": {
-          "sequence": "ABCDEFGHIJKLMNOPQRSTUVWXYZ",  // 氨基酸序列
-          "count": 1            // 该链拷贝数，单体写 1，多聚体写 2/3/...
+          "sequence": "ABCDEFGHIJKLMNOPQRSTUVWXYZ",  // amino-acid sequence
+          "count": 1            // copies of this chain; 1 for a monomer, 2/3/... for a multimer
         }
       }
     ]
   }
-]                               // 整体是数组，且无 dialect / version
+]                               // the whole thing is an array, with no dialect / version
 ```
 
 ---
 
-> **05 单链蛋白**
+> **05 Single-chain protein**
 ```json
 [
   {
@@ -135,7 +135,7 @@
 
 ---
 
-> **06 同源多聚体**
+> **06 Homomer**
 ```json
 [
   {
@@ -155,7 +155,7 @@
 
 ---
 
-> **07 异源多聚体**
+> **07 Heteromer**
 ```json
 [
   {
@@ -181,22 +181,22 @@
 
 ---
 
-> **08 本地开源版 ↔ 网页版 (AlphaFold Server) 字段对照**
+> **08 Field mapping: local open-source AF3 ↔ web AlphaFold Server**
 
-| 维度                  | 本地开源 AF3（00–03）              | 网页 AlphaFold Server（04–07）                  |
-| --------------------- | ---------------------------------- | ----------------------------------------------- |
-| 顶层                  | 单个对象 `{ }`                     | 数组 `[ { }, … ]`（一次可放多个任务）           |
-| 蛋白                  | `"protein"` + `"id"`               | `"proteinChain"` + `"count"`                    |
-| 多聚体                | id 列表 `["A", "B"]`               | `"count": 2`                                    |
-| 链 id                 | 手动指定                           | 服务器自动分配                                  |
-| DNA / RNA             | `"dna"` / `"rna"` + `id`           | `"dnaSequence"` / `"rnaSequence"` + `count`     |
-| 配体                  | `"ligand"` + `ccdCodes` / `smiles` | `"ligand": "CCD_XXX"` + `count`（仅白名单 CCD） |
-| 离子                  | 归入 ligand 的 ccdCode             | 独立 `"ion"` 字段                               |
-| `dialect` / `version` | 必需                               | 无                                              |
-| `modelSeeds`          | 必填，`[1,2,…]` 可多个             | 每个 job 上限 **1 个**（留空 `[]` 则随机）      |
+| Aspect                | Local open-source AF3 (00-03)        | Web AlphaFold Server (04-07)                             |
+| --------------------- | ------------------------------------ | -------------------------------------------------------- |
+| Top level             | a single object `{ }`                | an array `[ { }, … ]` (several jobs at once)             |
+| Protein               | `"protein"` + `"id"`                 | `"proteinChain"` + `"count"`                             |
+| Multimer              | id list `["A", "B"]`                 | `"count": 2`                                             |
+| Chain id              | assigned by hand                     | assigned by the server                                   |
+| DNA / RNA             | `"dna"` / `"rna"` + `id`             | `"dnaSequence"` / `"rnaSequence"` + `count`              |
+| Ligand                | `"ligand"` + `ccdCodes` / `smiles`   | `"ligand": "CCD_XXX"` + `count` (allow-listed CCDs only) |
+| Ion                   | folded into the ligand ccdCode       | its own `"ion"` field                                    |
+| `dialect` / `version` | required                             | none                                                     |
+| `modelSeeds`          | required; `[1,2,…]` may hold several | at most **1** per job (leave `[]` for random)            |
 
 ---
 
 
-##### [AlphaFold3官方文档](https://github.com/google-deepmind/alphafold3)
-##### [AlphaFold Server 帮助文档](https://alphafoldserver.com/faq)
+##### [AlphaFold3 official documentation](https://github.com/google-deepmind/alphafold3)
+##### [AlphaFold Server help](https://alphafoldserver.com/faq)

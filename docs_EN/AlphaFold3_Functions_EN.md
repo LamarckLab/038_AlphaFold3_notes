@@ -1,23 +1,23 @@
 <p align="right">
-  <a href="./docs_EN/AlphaFold3_Functions_EN.md">English</a> | <strong>中文</strong>
+  <strong>English</strong> | <a href="../AlphaFold3_Functions.md">中文</a>
 </p>
 
 ## Lamarck &nbsp; &nbsp; &nbsp; 2026-04-29
-#### 该文档用于记录 server 上跑 AlphaFold3 的各种命令
+#### This document records the commands for running AlphaFold3 on the server
 ---
 
-*路径配置*
+*Path configuration*
 ```bash
-输入目录:   /data/lmk/alphafold3_inputs       # JSON 输入文件
-输出目录:   /data/lmk/alphafold3_outputs      # 预测结果 (cif + 置信度)
-参数目录:   /data/lmk/alphafold3_parameters   # 模型权重 af3.bin
-数据库目录: /data/lmk/alphafold3_databases    # MSA 数据库 (~627GB)
+Input dir:      /data/lmk/alphafold3_inputs       # JSON input files
+Output dir:     /data/lmk/alphafold3_outputs      # predictions (cif + confidence)
+Parameters dir: /data/lmk/alphafold3_parameters   # model weights af3.bin
+Databases dir:  /data/lmk/alphafold3_databases    # MSA databases (~627GB)
 ```
-容器内挂载点分别为 `/af3_inputs`、`/af3_outputs`、`/af3_parameters`、`/af3_databases`
+Inside the container they are mounted at `/af3_inputs`, `/af3_outputs`, `/af3_parameters` and `/af3_databases`
 
 ---
 
-> **01 蛋白质结构预测 -- |单任务|不指定模板|默认参数|**
+> **01 Protein structure prediction -- |single job|no custom template|default settings|**
 ```bash
 docker run -it --rm \
   --volume /data/lmk/alphafold3_inputs:/af3_inputs \
@@ -34,7 +34,7 @@ docker run -it --rm \
     --output_dir=/af3_outputs
 ```
 
-> **02 蛋白质结构预测 -- |批量任务|不指定模板|默认参数|**
+> **02 Protein structure prediction -- |batch job|no custom template|default settings|**
 ```bash
 docker run -it --rm \
   --volume /data/lmk/alphafold3_inputs:/af3_inputs \
@@ -51,7 +51,7 @@ docker run -it --rm \
     --output_dir=/af3_outputs
 ```
 
-> **03 蛋白质结构预测 -- |批量任务|不指定模板|仅 Data Pipeline|**
+> **03 Protein structure prediction -- |batch job|no custom template|data pipeline only|**
 ```bash
 docker run -it --rm \
   --volume /data/lmk/alphafold3_inputs:/af3_inputs \
@@ -69,19 +69,19 @@ docker run -it --rm \
     --norun_inference
 ```
 
-任务多时串行太慢，可拆成多个容器并行 —— 详见 03b
+Running many jobs serially is too slow; split them across several containers instead — see 03b
 
-> **03b 蛋白质结构预测 -- |批量任务|仅 Data Pipeline|多容器并行|**
+> **03b Protein structure prediction -- |batch job|data pipeline only|parallel containers|**
 
-**输入**：`alphafold3_inputs/` 放几十上百个待跑 JSON
+**Input**: put the dozens or hundreds of pending JSONs in `alphafold3_inputs/`
 
-用 `scripts/af3_msa_split_parallel.py` 把任务轮转切分到 N 组，再起 N 个容器各跑一组。改脚本顶部的 `GROUPS` 即可调并行度，跑完它会打印配套的启动命令。
+Use `scripts/af3_msa_split_parallel.py` to deal the jobs round-robin into N groups, then start N containers, one per group. Edit `GROUPS` at the top of the script to change the degree of parallelism; when it finishes it prints the matching launch command.
 
 ```bash
 python /data/lmk/alphafold3_scripts/af3_msa_split_parallel.py
 ```
 
-例如
+For example
 ```bash
 for g in 0 1 2 3 4 5 6 7; do
   docker run --rm --name af3_g$g \
@@ -102,23 +102,23 @@ done
 wait
 ```
 
-`2>&1 | sed` 给每行加 `[gN]` 前缀，8 路日志交错也分得清；行尾 `&` 加最后 `wait` 让 8 路同时跑。
+`2>&1 | sed` prefixes every line with `[gN]`, so eight interleaved logs stay readable; the trailing `&` plus the final `wait` keeps all eight running at once.
 
-> **03c 查看与停止并行容器 -- |批量任务|多容器并行|运维|**
+> **03c Inspecting and stopping the parallel containers -- |batch job|parallel containers|operations|**
 
-查看运行中的 docker 容器
+List the running docker containers
 ```bash
 docker ps
 ```
 
-停掉所有正在跑的 AF3 容器。`docker ps -q` 只输出容器 ID，`$()` 把结果传给 `stop`
+Stop every running AF3 container. `docker ps -q` prints only the container IDs, and `$()` hands them to `stop`
 ```bash
 docker stop $(docker ps -q --filter name=af3_g)
 ```
 
-日常有这两条就够 —— 03b 的启动命令带了 `--rm`，容器退出即自动删除
+These two are enough day to day — the launch command in 03b passes `--rm`, so a container is removed as soon as it exits
 
-> **04 蛋白质结构预测 -- |批量任务|不指定模板|仅 Inference|**
+> **04 Protein structure prediction -- |batch job|no custom template|inference only|**
 ```bash
 docker run -it --rm \
   --volume /data/lmk/alphafold3_inputs:/af3_inputs \
@@ -136,7 +136,7 @@ docker run -it --rm \
     --norun_data_pipeline
 ```
 
-> **05 蛋白质结构预测 -- |批量任务|不指定模板|自定义每个种子 sample 数|**
+> **05 Protein structure prediction -- |batch job|no custom template|custom sample count per seed|**
 ```bash
 docker run -it --rm \
   --volume /data/lmk/alphafold3_inputs:/af3_inputs \
@@ -154,7 +154,7 @@ docker run -it --rm \
     --num_diffusion_samples=3
 ```
 
-> **06 蛋白质结构预测 -- |批量任务|不指定模板|限定模板日期|**
+> **06 Protein structure prediction -- |batch job|no custom template|template date cutoff|**
 ```bash
 docker run -it --rm \
   --volume /data/lmk/alphafold3_inputs:/af3_inputs \
@@ -172,32 +172,32 @@ docker run -it --rm \
     --max_template_date=2018-01-01
 ```
 
-> **07 蛋白质结构预测 -- |批量任务|指定模板|仅 Inference|**
+> **07 Protein structure prediction -- |batch job|custom template|inference only|**
 
-本流程涉及的所有示例文件见仓库 [custom template pipeline](custom%20template%20pipeline/)
+All the example files for this workflow are in the repo under [custom template pipeline](../custom%20template%20pipeline/)
 
-##### 流程总览
+##### Workflow overview
 
 ```
 2PV7.json
     │
-    │  ① 服务器跑 data pipeline
+    │  ① run the data pipeline on the server
     ▼
-2PV7_data.json  (含 MSA + 自动搜到的模板)
+2PV7_data.json  (MSA + the templates it found automatically)
 
 2PV7.cif
     │
-    │  ② 本地用 extract_single_chain.py 抽链
+    │  ② extract the chain locally with extract_single_chain.py
     ▼
 2PV7_single.cif + 2PV7_data.json
     │
-    │  ③ 本地用 add_custom_template.py 注入
+    │  ③ inject it locally with add_custom_template.py
     ▼
 2PV7_data_custom_template.json + 2PV7_single.cif
     │
-    │  ④ 服务器跑仅 inference
+    │  ④ run inference only on the server
     ▼
-最终结构 + 置信度文件
+final structure + confidence files
 ```
 
 ```bash
@@ -217,4 +217,4 @@ docker run -it --rm \
     --norun_data_pipeline
 ```
 
-##### [AlphaFold3官方文档](https://github.com/google-deepmind/alphafold3)
+##### [AlphaFold3 official documentation](https://github.com/google-deepmind/alphafold3)

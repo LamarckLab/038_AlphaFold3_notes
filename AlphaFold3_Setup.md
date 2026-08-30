@@ -1,3 +1,7 @@
+<p align="right">
+  <a href="./docs_EN/AlphaFold3_Setup_EN.md">English</a> | <strong>中文</strong>
+</p>
+
 ## Lamarck &nbsp; &nbsp; &nbsp; 2026-03-25
 #### 该文档使用 Docker 部署 AlphaFold3
 ---
