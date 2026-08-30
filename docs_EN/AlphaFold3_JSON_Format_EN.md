@@ -1,5 +1,5 @@
 <p align="left">
-  <a href="./README_EN.md">← Back to home</a>
+  <a href="./README_EN.md">Homepage</a>
 </p>
 <p align="right">
   <strong>English</strong> | <a href="../AlphaFold3_JSON_Format.md">中文</a>
